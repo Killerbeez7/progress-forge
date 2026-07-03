@@ -1,15 +1,27 @@
-import { Project } from "@/lib/types/types";
+import type { Project } from "@/types/types";
+
 import TaskItem from "./TaskItem";
 
-export default function TaskList({ project }: { project: Project }) {
+type TaskListProps = {
+  project: Project;
+  onAddTaskClick: () => void;
+};
+
+export default function TaskList({ project, onAddTaskClick }: TaskListProps) {
   return (
     <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-xl font-bold text-white">Tasks</h2>
+        <div>
+          <h2 className="text-xl font-bold text-white">Tasks</h2>
+          <p className="mt-1 text-sm text-slate-400">
+            Complete tasks to fill the project progress bar.
+          </p>
+        </div>
 
         <button
           type="button"
-          className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-amber-400"
+          onClick={onAddTaskClick}
+          className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-amber-400"
         >
           Add Task
         </button>

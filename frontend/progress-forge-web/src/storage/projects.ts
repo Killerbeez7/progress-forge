@@ -1,4 +1,5 @@
-import { Project } from "../types/types";
+import { DEFAULT_TASK_XP_REWARD } from "@/constants/gamification";
+import type { CreateTaskInput, Project, Task } from "@/types/types";
 
 const PROJECTS_STORAGE_KEY = "projects";
 
@@ -99,4 +100,40 @@ export const deleteProject = (projectId: string): void => {
   const updatedProjects = projects.filter((project) => project.id !== projectId);
 
   saveProjects(updatedProjects);
+};
+
+export const addTaskToProject = (
+  projectId: string,
+  input: CreateTaskInput
+): Project | null => {
+  const projects = getProjects();
+
+  const projectToUpdate = projects.find((project) => project.id === projectId);
+
+  if (!projectToUpdate) {
+    return null;
+  }
+
+  const task: Task = {
+    id: crypto.randomUUID(),
+    title: input.title.trim(),
+    isCompleted: false,
+    xpReward: DEFAULT_TASK_XP_REWARD,
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+  };
+
+  const updatedProject: Project = {
+    ...projectToUpdate,
+    tasks: [...projectToUpdate.tasks, task],
+    updatedAt: new Date().toISOString(),
+  };
+
+  const updatedProjects = projects.map((project) =>
+    project.id === projectId ? updatedProject : project
+  );
+
+  saveProjects(updatedProjects);
+
+  return updatedProject;
 };
